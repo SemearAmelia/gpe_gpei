@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>Cadastro de Profissionais da Educação</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect fill='%230f231e' width='16' height='16'/><text x='8' y='12' font-size='12' fill='%23c08829' text-anchor='middle' font-weight='bold'>✓</text></svg>" type="image/svg+xml">
+  <?!= include('Style') ?>
+</head>
+<body>
+  <!-- Tela de carregamento -->
+  <div id="tela-carregando">
+    <div class="selo-carregando"></div>
+    <p>Inicializando...</p>
+  </div>
+
+  <!-- Cabeçalho -->
+  <header class="cabecalho">
+    <img src="https://imgur.com/aosy843.png" alt="Logo GFA" class="cabecalho__logo">
+    <div class="cabecalho__textos">
+      <h1 class="cabecalho__titulo">Cadastro de Profissionais da Educação</h1>
+      <p class="cabecalho__subtitulo">SISTEMA GPE — MUNICÍPIO DE AMÉLIA RODRIGUES</p>
+    </div>
+    <div class="cabecalho__selo" id="selo-escola">Selecione a escola</div>
+  </header>
+
+  <!-- Layout Principal -->
+  <div class="layout">
+    <!-- Trilha lateral (desktop) -->
+    <aside class="trilha" id="trilha-desktop"></aside>
+
+    <!-- Trilha mobile (topo) -->
+    <div class="trilha-mobile" id="trilha-mobile"></div>
+
+    <!-- Cartão principal -->
+    <main class="cartao">
+      <div class="cartao__barra">
+        <span id="barra-progresso"></span>
+      </div>
+
+      <div class="cartao__corpo">
+        <!-- ETAPA 0: Seleção de Escola -->
+        <div class="etapa-conteudo oculto" data-etapa="0">
+          <div class="etapa__eyebrow">Passo 1 de 7</div>
+          <h2 class="etapa__titulo">Selecione sua escola</h2>
+          <p class="etapa__descricao">
+            Escolha a instituição de ensino à qual você está vinculado para prosseguir com o cadastro.
+          </p>
+
+          <!-- INÍCIO: Bloco de Consulta de CPF -->
+          <div class="consulta-box">
+            <p class="consulta-box__texto">Já fez seu cadastro? Consulte seu protocolo:</p>
+            <div style="display: flex; gap: 8px;">
+              <input type="text" id="input-consulta-cpf" data-mask="cpf" class="mono" placeholder="000.000.000-00">
+              <button type="button" class="btn btn-secundario" id="btn-consultar-cpf">Consultar</button>
+            </div>
+            <div id="resultado-consulta" class="oculto" style="margin-top: 12px;"></div>
+          </div>
+          <!-- FIM: Bloco de Consulta -->
+
+          <div class="escolas-lista" id="lista-escolas"></div>
+
+          <!-- INÍCIO: Termo LGPD -->
+          <div class="lgpd-box" style="margin-top: 24px; background: #fbf9f2; border: 1px solid var(--linha); border-left: 4px solid var(--ouro); border-radius: 8px; padding: 16px;">
+            <label style="display: flex; gap: 12px; align-items: flex-start; cursor: pointer; margin: 0;">
+              <input type="checkbox" id="aceite-lgpd" style="width: 22px; height: 22px; margin-top: 2px; accent-color: var(--ouro); cursor: pointer; flex-shrink: 0;">
+              <span style="font-size: 0.85rem; color: var(--verde-900); line-height: 1.5;">
+                <strong>Termo de Consentimento LGPD:</strong> Estou ciente e concordo que meus dados pessoais fornecidos neste formulário serão tratados com segurança e em total conformidade com a Lei Geral de Proteção de Dados (Lei nº 13.709/2018). Autorizo a utilização dessas informações <strong>exclusivamente para os fins de cadastro, vinculação e gestão nos sistemas GPE e GPEI</strong>.
+              </span>
+            </label>
+          </div>
+          <!-- FIM: Termo LGPD -->
+          
+        </div>
+
+        <!-- ETAPA 1: Dados Pessoais -->
+        <div class="etapa-conteudo oculto" data-etapa="1">
+          <div class="etapa__eyebrow">Passo 2 de 7</div>
+          <h2 class="etapa__titulo">Dados pessoais</h2>
+          <p class="etapa__descricao">
+            Preencha com cuidado as informações de identificação pessoal.
+          </p>
+          <form id="form-cadastro" class="grade">
+            <!-- CPF -->
+            <div class="campo" data-campo="PROFISSIONAL_CPF">
+              <label><span class="obrig">*</span> CPF</label>
+              <input type="text" data-mask="cpf" class="mono" placeholder="000.000.000-00" required>
+              <small class="erro-msg">CPF inválido</small>
+            </div>
+
+            <!-- RG (opcional) -->
+            <div class="campo" data-campo="PROFISSIONAL_RG">
+              <label>RG <span class="opc">(opcional)</span></label>
+              <input type="text" data-mask="cpf" class="mono" placeholder="00.000.000-0">
+            </div>
+
+            <!-- Nome Completo -->
+            <div class="campo campo--largo" data-campo="PROFISSIONAL_NOME">
+              <label><span class="obrig">*</span> Nome completo</label>
+              <input type="text" placeholder="Digite seu nome completo" required>
+              <small class="ajuda">Sem abreviações ou apelidos</small>
+            </div>
+
+            <!-- Nome Social (opcional) -->
+            <div class="campo campo--largo" data-campo="PROFISSIONAL_NOME_SOCIAL">
+              <label>Nome social <span class="opc">(opcional)</span></label>
+              <input type="text" placeholder="Se aplicável">
+            </div>
+
+            <!-- Data de Nascimento -->
+            <div class="campo" data-campo="PROFISSIONAL_DT_NASCIMENTO">
+              <label><span class="obrig">*</span> Data de nascimento</label>
+              <input type="date" required>
+            </div>
+
+            <!-- Sexo -->
+            <div class="campo" data-campo="PROFISSIONAL_SEXO">
+              <label><span class="obrig">*</span> Sexo</label>
+              <select required></select>
+            </div>
+
+            <!-- Gênero (opcional) -->
+            <div class="campo" data-campo="PROFISSIONAL_GENERO">
+              <label>Gênero <span class="opc">(opcional)</span></label>
+              <select></select>
+            </div>
+
+            <!-- Raça/Cor -->
+            <div class="campo" data-campo="PROFISSIONAL_RACA_COR">
+              <label><span class="obrig">*</span> Raça/Cor</label>
+              <select required></select>
+            </div>
+
+            <!-- Quilombola -->
+            <div class="campo" data-campo="PROFISSIONAL_QUILOMBOLA">
+              <label><span class="obrig">*</span> Se autoclassifica quilombola</label>
+              <select required></select>
+            </div>
+
+            <!-- Nacionalidade -->
+            <div class="campo" data-campo="PROFISSIONAL_NACIONALIDADE">
+              <label><span class="obrig">*</span> Nacionalidade</label>
+              <select required></select>
+            </div>
+
+            <!-- País de Nascimento -->
+            <div class="campo" data-campo="PROFISSIONAL_PAIS_NASCIMENTO">
+              <label><span class="obrig">*</span> País de nascimento</label>
+              <select required></select>
+            </div>
+
+            <!-- Estado de Nascimento -->
+            <div class="campo" data-campo="PROFISSIONAL_ESTADO_NASCIMENTO">
+              <label><span class="obrig">*</span> Estado de nascimento</label>
+              <select required></select>
+            </div>
+
+            <!-- Município de Nascimento (combobox) -->
+            <div class="campo combo" data-campo="PROFISSIONAL_MUNICIPIO_NASCIMENTO">
+              <label><span class="obrig">*</span> Município de nascimento</label>
+              <input type="text" placeholder="Digite para buscar...">
+              <div class="combo__lista"></div>
+            </div>
+
+            <!-- Telefone -->
+            <div class="campo" data-campo="PROFISSIONAL_TELEFONE">
+              <label><span class="obrig">*</span> Telefone</label>
+              <input type="tel" data-mask="telefone" class="mono" placeholder="(00) 00000-0000" required>
+              <small class="ajuda">DDD + número (10 a 11 dígitos)</small>
+            </div>
+
+            <!-- E-mail -->
+            <div class="campo campo--largo" data-campo="PROFISSIONAL_E_MAIL">
+              <label><span class="obrig">*</span> E-mail</label>
+              <input type="email" placeholder="seu.email@dominio.com" required>
+            </div>
+
+            <!-- Nível de Escolaridade -->
+            <div class="campo" data-campo="CO_NIVEL_ESCOLARIDADE">
+              <label><span class="obrig">*</span> Nível de escolaridade</label>
+              <select required></select>
+            </div>
+
+            <!-- Tipo de Ensino Médio (opcional) -->
+            <div class="campo" data-campo="CO_TIPO_ENSINO_MEDIO">
+              <label>Tipo de ensino médio <span class="opc">(opcional)</span></label>
+              <select></select>
+            </div>
+
+            <!-- Natureza da Instituição Médio (opcional) -->
+            <div class="campo" data-campo="NATUREZA_INSTITUICAO_MEDIO_PROFISSIONAL">
+              <label>Natureza da instituição de ensino médio <span class="opc">(opcional)</span></label>
+              <select></select>
+            </div>
+          </form>
+        </div>
+
+        <!-- ETAPA 2: Endereço -->
+        <div class="etapa-conteudo oculto" data-etapa="2">
+          <div class="etapa__eyebrow">Passo 3 de 7</div>
+          <h2 class="etapa__titulo">Endereço de residência</h2>
+          <p class="etapa__descricao">
+            Informações sobre seu local de residência atual.
+          </p>
+          <form class="grade">
+            <!-- Estado de Residência -->
+            <div class="campo" data-campo="PROFISSIONAL_CO_UF_RES">
+              <label><span class="obrig">*</span> Estado</label>
+              <select required></select>
+            </div>
+
+            <!-- Município de Residência (combobox) -->
+            <div class="campo combo" data-campo="PROFISSIONAL_CO_MUNICIPIO_RES">
+              <label><span class="obrig">*</span> Município</label>
+              <input type="text" placeholder="Digite para buscar...">
+              <div class="combo__lista"></div>
+            </div>
+
+            <!-- Logradouro (opcional) -->
+            <div class="campo campo--largo" data-campo="PROFISSIONAL_DS_LOGRADOURO_RES">
+              <label>Logradouro <span class="opc">(opcional)</span></label>
+              <input type="text" placeholder="Rua, Avenida, etc.">
+            </div>
+
+            <!-- Número (opcional) -->
+            <div class="campo" data-campo="PROFISSIONAL_NU_ENDERECO_RES">
+              <label>Número <span class="opc">(opcional)</span></label>
+              <input type="text" placeholder="Ex: 123 ou S/N">
+            </div>
+
+            <!-- Bairro (opcional) -->
+            <div class="campo" data-campo="PROFISSIONAL_BAIRRO_RES">
+              <label>Bairro <span class="opc">(opcional)</span></label>
+              <input type="text" placeholder="Nome do bairro">
+            </div>
+
+            <!-- CEP (opcional) -->
+            <div class="campo" data-campo="PROFISSIONAL_CEP_RES">
+              <label>CEP <span class="opc">(opcional)</span></label>
+              <input type="text" data-mask="cep" class="mono" placeholder="00000-000">
+            </div>
+
+            <!-- Localização Geográfica (opcional) -->
+            <div class="campo" data-campo="PROFISSIONAL_LOCALIZACAO_GEOGRAFICA">
+              <label>Localização geográfica <span class="opc">(opcional)</span></label>
+              <select></select>
+            </div>
+
+            <!-- Localização Diferenciada (opcional) -->
+            <div class="campo campo--largo" data-campo="PROFISSIONAL_LOCALIZACAO_DIFERENCIADA">
+              <label>Localização diferenciada <span class="opc">(opcional)</span></label>
+              <select></select>
+            </div>
+          </form>
+        </div>
+
+        <!-- ETAPA 3: Deficiências -->
+        <div class="etapa-conteudo oculto" data-etapa="3">
+          <div class="etapa__eyebrow">Passo 4 de 7</div>
+          <h2 class="etapa__titulo">Informações sobre deficiência</h2>
+          <p class="etapa__descricao">
+            Indique se você possui deficiência, transtorno do espectro autista ou altas habilidades/superdotação.
+          </p>
+          <form class="grade">
+            <div class="campo campo--largo" data-campo="PROFISSIONAL_DEFICIENCIA">
+              <label><span class="obrig">*</span> Deficiência / Transtorno / Superdotação</label>
+              <div class="chips" id="chips-deficiencia"></div>
+              <small class="ajuda">
+                Selecione uma ou mais opções. "Não possui" ou "Não informado" são mutuamente exclusivos.
+              </small>
+            </div>
+          </form>
+        </div>
+
+        <!-- ETAPA 4: Formação Acadêmica -->
+        <div class="etapa-conteudo oculto" data-etapa="4">
+          <div class="etapa__eyebrow">Passo 5 de 7</div>
+          <h2 class="etapa__titulo">Formação acadêmica</h2>
+          <p class="etapa__descricao" id="formacao-descricao">
+            Dados sobre sua formação superior e pós-graduação relacionada à sua atuação prática.
+          </p>
+          <form class="grade">
+            <!-- Tipo de Formação Acadêmica (condicional) -->
+            <div class="campo" data-campo="CO_TIPO_FORMACAO_ACADEMICA">
+              <label>
+                Tipo de formação acadêmica
+                <span class="marcador-obrig">(condicional)</span>
+              </label>
+              <select></select>
+            </div>
+
+            <!-- Área do Conhecimento (condicional) -->
+            <div class="campo" data-campo="CO_AREA_DO_CONHECIMENTO_FORMACAO_ACADEMICA">
+              <label>
+                Área do conhecimento
+                <span class="marcador-obrig">(condicional)</span>
+              </label>
+              <select></select>
+            </div>
+
+            <!-- Curso (opcional) -->
+            <div class="campo campo--largo" data-campo="CO_CURSO_FORMACAO_ACADEMICA">
+              <label>Código do curso <span class="opc">(opcional)</span></label>
+              <input type="text" placeholder="Código conforme Censo Escolar">
+            </div>
+
+            <!-- Instituição (opcional) -->
+            <div class="campo campo--largo" data-campo="NO_INSTITUICAO_ENSINO_FORMACAO_ACADEMICA">
+              <label>Instituição de ensino <span class="opc">(opcional)</span></label>
+              <input type="text" placeholder="Nome da universidade/instituição">
+            </div>
+
+            <!-- Natureza da Instituição (opcional) -->
+            <div class="campo" data-campo="NATUREZA_INSTITUICAO_FORMACAO_ACADEMICA">
+              <label>Natureza da instituição <span class="opc">(opcional)</span></label>
+              <select></select>
+            </div>
+
+            <!-- Ano de Início (opcional) -->
+            <div class="campo" data-campo="ANO_INICIO_FORMACAO_ACADEMICA">
+              <label>Ano de início <span class="opc">(opcional)</span></label>
+              <input type="number" placeholder="AAAA" min="1950" max="2100">
+            </div>
+
+            <!-- Ano de Conclusão (opcional) -->
+            <div class="campo" data-campo="ANO_CONCLUSAO_FORMACAO_ACADEMICA">
+              <label>Ano de conclusão <span class="opc">(opcional)</span></label>
+              <input type="number" placeholder="AAAA" min="1950" max="2100">
+            </div>
+          </form>
+        </div>
+
+        <!-- ETAPA 5: Vínculo Profissional -->
+        <div class="etapa-conteudo oculto" data-etapa="5">
+          <div class="etapa__eyebrow">Passo 6 de 7</div>
+          <h2 class="etapa__titulo">Vínculo profissional</h2>
+          <p class="etapa__descricao">
+            Informações sobre sua atuação na rede ou instituição de ensino.
+          </p>
+          <form class="grade">
+            <!-- Perfil do Vínculo (opcional) -->
+            <div class="campo" data-campo="CO_PROFISSIONAL_PERFIL_VINCULO">
+              <label>Perfil do vínculo <span class="opc">(opcional)</span></label>
+              <select></select>
+            </div>
+
+            <!-- Tipo de Vínculo -->
+            <div class="campo" data-campo="CO_TIPO_VINCULO">
+              <label><span class="obrig">*</span> Tipo de vínculo</label>
+              <select required></select>
+            </div>
+
+            <!-- Situação do Vínculo -->
+            <div class="campo" data-campo="SITUACAO_VINCULO_PROFISSIONAL_REDE">
+              <label><span class="obrig">*</span> Situação do vínculo</label>
+              <select required></select>
+            </div>
+
+            <!-- Data de Início do Vínculo -->
+            <div class="campo" data-campo="DATA_INICIO_VINCULO_PROFISSIONAL_REDE">
+              <label><span class="obrig">*</span> Data de início do vínculo</label>
+              <input type="date" required>
+            </div>
+
+            <!-- Data de Fim do Vínculo (opcional) -->
+            <div class="campo" data-campo="DATA_FIM_VINCULO_PROFISSIONAL_REDE">
+              <label>Data de fim do vínculo <span class="opc">(opcional)</span></label>
+              <input type="date">
+            </div>
+
+            <!-- Função -->
+            <div class="campo" data-campo="CO_FUNCAO">
+              <label><span class="obrig">*</span> Função</label>
+              <select required></select>
+            </div>
+
+            <!-- Data de Ingresso na Função -->
+            <div class="campo" data-campo="DATA_INGRESSO">
+              <label><span class="obrig">*</span> Data de ingresso na função</label>
+              <input type="date" required>
+            </div>
+
+            <!-- Data de Fim da Função (opcional) -->
+            <div class="campo" data-campo="DATA_FIM">
+              <label>Data de fim da função <span class="opc">(opcional)</span></label>
+              <input type="date">
+            </div>
+
+            <!-- Carga Horária Semanal (opcional) -->
+            <div class="campo" data-campo="CARGA_HORARIA_SEMANAL">
+              <label>Carga horária semanal <span class="opc">(opcional)</span></label>
+              <input type="number" placeholder="Ex: 40" min="0" max="60">
+            </div>
+
+            <!-- Identificação da Instituição (opcional) -->
+            <div class="campo campo--largo" data-campo="PROFISSIONAL_IDENTIFICACAO_INSTITUICAO">
+              <label>ID / Matrícula <span class="opc">(opcional)</span></label>
+              <input type="text" placeholder="Número de matrícula ou identificação">
+            </div>
+
+            <!-- Área do Conhecimento do Vínculo -->
+            <div class="campo campo--largo" data-campo="AREA_CONHECIMENTO_VINCULO_PROFISSIONAL">
+              <label><span class="obrig">*</span> Área do conhecimento do vínculo</label>
+              <select required></select>
+            </div>
+          </form>
+        </div>
+
+        <!-- ETAPA 6: Revisão -->
+        <div class="etapa-conteudo oculto" data-etapa="6">
+          <div class="etapa__eyebrow">Passo 7 de 7</div>
+          <h2 class="etapa__titulo">Revisão e confirmação</h2>
+          <p class="etapa__descricao">
+            Verifique todas as informações antes de enviar seu cadastro. Clique em qualquer seção para editar.
+          </p>
+          <div id="revisao-container"></div>
+        </div>
+
+        <!-- SUCESSO -->
+        <div class="etapa-conteudo oculto" data-etapa="sucesso">
+          <div class="sucesso-tela">
+            <div class="sucesso-selo">✓</div>
+            <h2 class="etapa__titulo">Cadastro realizado!</h2>
+            <p class="etapa__descricao">Suas informações foram registradas com sucesso no sistema.</p>
+            <p style="margin-top: 16px; margin-bottom: 8px; font-size: 0.85rem; color: #5b6058;">
+              <strong>Protocolo de referência:</strong>
+            </p>
+            <div class="sucesso-protocolo" id="texto-protocolo"></div>
+            <p style="margin-top: 16px; font-size: 0.82rem; color: #5b6058;">
+              Guarde este protocolo para futuras consultas.
+            </p>
+
+            <button type="button" id="btn-novo-cadastro" class="btn btn-secundario" style="margin-top: 24px;">Fazer um novo cadastro</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rodapé de Navegação -->
+      <div id="navegacao" class="navegacao">
+        <button type="button" id="btn-voltar" class="btn btn-secundario">← Voltar</button>
+        <button type="button" id="btn-avancar" class="btn btn-primario">Avançar →</button>
+        <button type="button" id="btn-enviar" class="btn btn-ouro oculto">Confirmar e enviar</button>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal de Edição Rápida -->
+  <div id="modal-edicao" class="modal-overlay oculto">
+    <div class="modal-caixa">
+      <div id="modal-conteudo-dinamico" class="modal-conteudo-scroll"></div>
+      <div class="modal-acoes">
+        <button type="button" class="btn btn-secundario" id="btn-cancelar-modal">Cancelar</button>
+        <button type="button" class="btn btn-primario" id="btn-salvar-modal">Concluir Edição</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast (notificações) -->
+  <div id="toast"></div>
+
+  <!-- Toast (notificações) -->
+  <div id="toast"></div>
+
+  <!-- Footer -->
+  <?!= include('Footer') ?>
+
+  <!-- Scripts -->
+  <?!= include('JavaScript') ?>
+</body>
+</html>
