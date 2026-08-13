@@ -229,7 +229,7 @@
 
   /* ---------- Toast ---------- */
   #toast{
-    position:fixed; bottom:22px; left:50%; transform:translateX(-50%) translateY(20px); z-index:200;
+    position:fixed; bottom:22px; left:50%; transform:translateX(-50%) translateY(20px); z-index:9999;
     background:var(--erro); color:#fff; padding:13px 20px; border-radius:10px; font-size:.87rem; font-weight:500;
     box-shadow:var(--sombra-lg); opacity:0; pointer-events:none; transition:all .3s ease; max-width:90vw;
   }
