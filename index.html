@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+c<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <title>Cadastro de Profissionais da Educação</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect fill='%230f231e' width='16' height='16'/><text x='8' y='12' font-size='12' fill='%23c08829' text-anchor='middle' font-weight='bold'>✓</text></svg>" type="image/svg+xml">
-  <?!= include('Style') ?>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <!-- Tela de carregamento -->
@@ -462,9 +462,21 @@
   <div id="toast"></div>
 
   <!-- Footer -->
-  <?!= include('Footer') ?>
+ <footer class="rodape">
+  <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; padding-top:14px; border-top:1px solid var(--linha);">
+    <div style="display:flex; align-items:center; gap:8px;">
+      <img src="https://imgur.com/aosy843.png" alt="GFA Tecnologia" style="height:22px; width:auto; opacity:.85; border-radius:4px;">
+      <span style="font-family:var(--fonte-mono); font-size:.7rem; color:var(--tinta-suave); letter-spacing:.02em;">
+        Desenvolvido pelo setor da Tecnologia & Inovação SEMEAR 2026&copy
+      </span>
+    </div>
+    <span style="font-family:var(--fonte-mono); font-size:.68rem; color:var(--tinta-suave);">
+      Sistema GPE | GPEI — Prefeitura de Amélia Rodrigues/BA
+    </span>
+  </div>
+</footer>
 
   <!-- Scripts -->
-  <?!= include('JavaScript') ?>
+  <script src="script.js"></script>
 </body>
 </html>
