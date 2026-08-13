@@ -1,27 +1,33 @@
 export default async function handler(req, res) {
-  // Apenas aceita POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  // Substitua pela URL do Web App gerada na Fase 1
-  const GAS_URL = process.env.GAS_WEB_APP_URL || 'https://script.google.com/macros/s/AKfycbxT4VCfIyGA-RXf1pnxvmqvevZX_MmsZvkKCed9gmnlKsDhcqgvmipqr4l47jxa7Mmn0g/exec';
+  // COLOQUE A NOVA URL GERADA NO PASSO 7 AQUI DENTRO DAS ASPAS
+  const GAS_URL = 'https://script.google.com/macros/s/AKfy.../exec';
 
   try {
     const gasResponse = await fetch(GAS_URL, {
       method: 'POST',
-      headers: {
-        // Envia como text/plain para contornar preflight se necessário, 
-        // mas o fetch do backend lida bem com isso
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(req.body)
     });
 
-    const data = await gasResponse.json();
-    res.status(200).json(data);
+    // Pega o texto puro antes de converter, para evitar quebra se o Google mandar HTML
+    const text = await gasResponse.text();
+    
+    try {
+      const data = JSON.parse(text);
+      res.status(200).json(data);
+    } catch (e) {
+      // Se não conseguiu converter para JSON, é porque o Google bloqueou a requisição
+      console.error('Resposta não-JSON do Google:', text);
+      res.status(500).json({ 
+        error: 'Conexão recusada pelo banco de dados. Verifique se o Apps Script foi implantado para "Qualquer pessoa".' 
+      });
+    }
   } catch (error) {
-    console.error('Erro na comunicação com o GAS:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error('Erro no Fetch:', error);
+    res.status(500).json({ error: 'Erro de comunicação entre o Vercel e o Google.' });
   }
 }

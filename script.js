@@ -1,46 +1,44 @@
   /* =====================================================================
-   GAS-SHIM PARA VERCEL
+   GAS-SHIM PARA VERCEL (VERSÃO APRIMORADA)
    Mapeia google.script.run para a Serverless Function /api/gas
    ===================================================================== */
 window.google = {
   script: {
-    run: new Proxy({}, {
-      get: function(target, functionName) {
-        let successHandler = function() {};
-        let failureHandler = function(err) { console.error("Erro no Shim:", err); };
-
-        // O runner é a função que será de fato executada (ex: getBootstrap())
-        const runner = function(...args) {
-          fetch('/api/gas', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ functionName: functionName, args: args })
-          })
-          .then(res => res.json())
-          .then(data => {
-            if (data.error) {
-              failureHandler(data.error);
-            } else {
-              successHandler(data.result);
+    run: (function() {
+      function criarRunner(onSuccess, onFailure) {
+        return new Proxy({}, {
+          get: function(target, prop) {
+            // Se tentar encadear um handler de sucesso, cria um novo runner com a função salva
+            if (prop === 'withSuccessHandler') {
+              return function(cb) { return criarRunner(cb, onFailure); };
             }
-          })
-          .catch(err => failureHandler(err));
-        };
-
-        // Permite o encadeamento idêntico ao do Google Apps Script
-        runner.withSuccessHandler = function(callback) {
-          successHandler = callback;
-          return runner;
-        };
-        
-        runner.withFailureHandler = function(callback) {
-          failureHandler = callback;
-          return runner;
-        };
-
-        return runner;
+            // Se tentar encadear um handler de falha, salva a função também
+            if (prop === 'withFailureHandler') {
+              return function(cb) { return criarRunner(onSuccess, cb); };
+            }
+            // Quando chamar a função real (ex: getBootstrap, salvarProfissional)
+            return function(...args) {
+              fetch('/api/gas', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ functionName: prop, args: args })
+              })
+              .then(res => res.json())
+              .then(data => {
+                if (data.error) onFailure(data.error);
+                else onSuccess(data.result);
+              })
+              .catch(err => onFailure(err));
+            };
+          }
+        });
       }
-    })
+      // Estado inicial sem callbacks definidos
+      return criarRunner(
+        function(){}, 
+        function(err){ console.error("Erro no Shim:", err); }
+      );
+    })()
   }
 };
 
